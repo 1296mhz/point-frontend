@@ -48,9 +48,9 @@ async function add(addressPoint: any) {
   }
 }
 
-async function remove(uuid: string) {
+async function remove(_id: string) {
   try {
-    return await httpClient.delete(`/api/reports/${uuid}`, {
+    return await httpClient.delete(`/api/reports/${_id}`, {
       headers: {
         ...authHeader()
       },

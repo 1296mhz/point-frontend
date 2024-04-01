@@ -155,7 +155,6 @@ export default {
       },
       taking: 0,
     },
-    user: '',
   }),
   computed: {
     ...mapGetters(['getterUser', 'getterUsers', 'getterReports']),
@@ -225,6 +224,19 @@ export default {
           address: this.report.user.pointAddress._id,
           taking: this.report.taking,
         });
+        this.report = {
+          user: {
+            _id: '',
+            firstName: '',
+            lastName: '',
+            middleName: '',
+            pointAddress: {
+              _id: '',
+              address: '',
+            },
+          },
+          taking: 0,
+        };
         await this.findReports();
       }
 
@@ -235,6 +247,19 @@ export default {
           address: this.report.user.pointAddress._id,
           taking: this.report.taking,
         });
+        this.report = {
+          user: {
+            _id: '',
+            firstName: '',
+            lastName: '',
+            middleName: '',
+            pointAddress: {
+              _id: '',
+              address: '',
+            },
+          },
+          taking: 0,
+        };
         await this.findReports();
       }
       this.close();
