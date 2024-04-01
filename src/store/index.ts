@@ -180,10 +180,16 @@ const actions = {
       throw err;
     }
   },
+  async editReport({commit}: any, report: any) {
+    try {
+      return await ReportsService.update(report);
+    } catch (err) {
+      throw err;
+    }
+  },
   async findReports({commit}: any) {
     try {
       const response = await ReportsService.find();
-      console.log(response);
       commit('setReports', response.data);
     } catch (err) {
       throw err;

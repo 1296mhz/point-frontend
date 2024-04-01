@@ -33,13 +33,16 @@ client.interceptors.response.use(
     }
 
     if (error.response.status === 500) {
-      console.log();
       if (error.response.data.code === 11000) {
         store.commit('setError', 'Такой адрес уже существует.');
         return error.response.data;
-      } else {
-        store.commit('setError', 'Ошибка на сервере.');
       }
+
+      if (error.response.data.message === 'ReportExist') {
+        store.commit('setError', 'Отчет уже существует!');
+        return error.response.data;
+      }
+      store.commit('setError', 'Ошибка на сервере.');
       return error.response.data;
     }
 

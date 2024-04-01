@@ -60,9 +60,9 @@ async function remove(uuid: string) {
   }
 }
 
-async function update(uuid: any, data: any) {
+async function update(report: any) {
   try {
-    return await httpClient.put(`/api/reports/${data._id}`, data, {
+    return await httpClient.put(`/api/reports/${report._id}`, report, {
       headers: {
         ...authHeader()
       },

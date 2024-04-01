@@ -12,7 +12,12 @@
           <v-toolbar-title>Ежедневные отчёт по выручке</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark class="mb-2" @click="newItem()">
+          <v-btn
+            color="primary"
+            dark
+            class="mb-2"
+            @click="newItem({ action: 'new' })"
+          >
             Новый отчет
           </v-btn>
           <v-dialog v-model="dialog" max-width="500px">
@@ -99,7 +104,13 @@
         {{ item.user.middleName }}
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+        <v-icon
+          small
+          class="mr-2"
+          @click="editItem({ action: 'edit', item: item })"
+        >
+          mdi-pencil
+        </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
       <!-- <template v-slot:no-data>
@@ -116,8 +127,8 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
   name: 'DailyRevenueReportView',
   data: () => ({
+    action: null,
     selected: [],
-    prevSelectedCounter: 0,
     nameRules: [
       (v) => !!v || 'Name is required',
       (v) => (v && v.length <= 80) || 'Name must be less than 40 characters',
@@ -162,6 +173,7 @@ export default {
       'setTitle',
       'setLoading',
       'addReport',
+      'editReport',
       'findUsers',
       'findAddressPoint',
       'findReports',
@@ -172,10 +184,19 @@ export default {
       return newDate.toISOString().split('T')[0];
     },
 
-    newItem() {
+    newItem(item) {
+      this.action = item.action;
       this.dialog = true;
     },
     editItem(item) {
+      console.log(item);
+      this.action = item.action;
+      this.report._id = item.item._id;
+      this.report.user = {
+        ...item.item.user,
+        pointAddress: item.item.address,
+      };
+      this.report.taking = item.item.taking;
       this.dialog = true;
     },
 
@@ -198,13 +219,24 @@ export default {
     },
 
     async save() {
-      console.log(this.report);
-      await this.addReport({
-        user: this.report.user._id,
-        address: this.report.user.pointAddress._id,
-        taking: this.report.taking,
-      });
-      await this.findReports();
+      if (this.action === 'new') {
+        await this.addReport({
+          user: this.report.user._id,
+          address: this.report.user.pointAddress._id,
+          taking: this.report.taking,
+        });
+        await this.findReports();
+      }
+
+      if (this.action === 'edit') {
+        await this.editReport({
+          _id: this.report._id,
+          user: this.report.user._id,
+          address: this.report.user.pointAddress._id,
+          taking: this.report.taking,
+        });
+        await this.findReports();
+      }
       this.close();
     },
   },
