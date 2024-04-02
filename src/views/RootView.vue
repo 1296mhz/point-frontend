@@ -134,7 +134,7 @@ export default Vue.extend({
   },
   async mounted() {
     this.$log.info('Application started!');
-    await this.setTitle('ПРОВЕРОЧНОЕ ЗАДАНИЕ');
+    // await this.setTitle('ПРОВЕРОЧНОЕ ЗАДАНИЕ');
     // await this.setMessage('Добро пожаловать!');
     await this.setLoading(false);
     // Убрать это  отсюда

@@ -31,6 +31,7 @@ const state = {
   snackbarMessages: [],
   users: [],
   reports: [],
+  managers: []
   // okoObjects: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]"),
   // tasks: JSON.parse(window.localStorage.getItem(STORAGE_TASKS) || "[]"),
 };
@@ -56,6 +57,9 @@ const mutations = {
   },
   setReports(state: any, payload: any) {
     Vue.set(state, 'reports', payload);
+  },
+  setManagers(state: any, payload: any) {
+    Vue.set(state, 'managers', payload);
   },
   loginFailure(state: any) {
     localStorage.removeItem('user');
@@ -195,6 +199,15 @@ const actions = {
       throw err;
     }
   },
+  async findManagers({commit}: any) {
+    try {
+      const response = await UsersService.findManagers();
+      commit('setManagers', response.data);
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
+  },
   logout({commit}: any) {
     commit('logout');
   },
@@ -207,6 +220,7 @@ const getters = {
   getterAddresses: (state: any) => state.addresses,
   getterReports: (state: any) => state.reports,
   getterUsers: (state: any) => state.users,
+  getterManagers: (state: any) => state.managers,
   lastError: (state: any) => {
     return state.errors.length > 0 ? state.errors[state.errors.length - 1] : '';
   },

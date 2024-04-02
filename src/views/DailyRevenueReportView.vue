@@ -188,7 +188,6 @@ export default {
       this.dialog = true;
     },
     editItem(item) {
-      console.log(item);
       this.action = item.action;
       this.report._id = item.item._id;
       this.report.user = {
@@ -225,16 +224,6 @@ export default {
           taking: this.report.taking,
         });
         this.report = {
-          user: {
-            _id: '',
-            firstName: '',
-            lastName: '',
-            middleName: '',
-            pointAddress: {
-              _id: '',
-              address: '',
-            },
-          },
           taking: 0,
         };
         await this.findReports();
@@ -248,16 +237,6 @@ export default {
           taking: this.report.taking,
         });
         this.report = {
-          user: {
-            _id: '',
-            firstName: '',
-            lastName: '',
-            middleName: '',
-            pointAddress: {
-              _id: '',
-              address: '',
-            },
-          },
           taking: 0,
         };
         await this.findReports();

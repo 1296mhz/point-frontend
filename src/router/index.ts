@@ -5,6 +5,7 @@ import LoginView from '../views/LoginView.vue';
 import DailyRevenueReportView from '../views/DailyRevenueReportView.vue';
 import AddressPointView from '../views/AddressPointView.vue';
 import UsersView from '../views/UsersView.vue';
+import ReportsView from '../views/ReportsView.vue';
 import store from '@/store';
 
 Vue.use(VueRouter);
@@ -50,6 +51,15 @@ const routes: Array<RouteConfig> = [
         path: '/users',
         name: 'Users',
         component: UsersView,
+        meta: {
+          requiresAuth: true,
+          is_admin: true,
+        },
+      },
+      {
+        path: '/reports',
+        name: 'Reports',
+        component: ReportsView,
         meta: {
           requiresAuth: true,
           is_admin: true,

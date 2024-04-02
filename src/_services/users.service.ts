@@ -5,6 +5,7 @@ import {authHeader} from '../_helpers';
 export const UsersService = {
   get,
   find,
+  findManagers,
   add,
   update,
   remove
@@ -69,5 +70,18 @@ async function update(user: any) {
     });
   } catch (err) {
     return Promise.reject(err);
+  }
+}
+
+async function findManagers() {
+  try {
+    const response = await httpClient.get(`/api/managers`, {
+      headers: {
+        ...authHeader()
+      },
+    });
+    return response;
+  } catch (err) {
+    return Promise.reject();
   }
 }
