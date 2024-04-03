@@ -1,67 +1,67 @@
 <template>
-  <div>
-    <v-app>
-      <v-overlay :value="!loading" opacity="0.46">
-        <v-progress-circular
-          indeterminate
-          :rotate="360"
-          :size="100"
-          :width="15"
-          color="amber"
-          >Загрузка</v-progress-circular
+  <v-app id="inspire">
+    <v-overlay :value="!loading" opacity="0.46">
+      <v-progress-circular
+        indeterminate
+        :rotate="360"
+        :size="100"
+        :width="15"
+        color="amber"
+        >Загрузка</v-progress-circular
+      >
+    </v-overlay>
+    <v-app-bar app color="orange" clipped-left>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title>{{ getterTitle }}</v-toolbar-title>
+      <div class="d-flex align-center"></div>
+      <v-spacer></v-spacer>
+      <v-btn @click="exit()" target="_blank" text>
+        <!-- <span class="mr-2">Выход</span> -->
+        <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-navigation-drawer v-model="drawer" app temporary fixed>
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{
+            roleToText(getterUser.role)
+          }}</v-list-item-title>
+          <v-list-item-subtitle>
+            {{ getterUser.lastName }} {{ getterUser.firstName }}
+            {{ getterUser.middleName }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-divider></v-divider>
+      <v-list dense>
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          :to="item.path"
+          link
         >
-      </v-overlay>
-      <v-app-bar app color="orange">
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>{{ getterTitle }}</v-toolbar-title>
-        <div class="d-flex align-center"></div>
-        <v-spacer></v-spacer>
-        <v-btn @click="exit()" target="_blank" text>
-          <!-- <span class="mr-2">Выход</span> -->
-          <v-icon>mdi-open-in-new</v-icon>
-        </v-btn>
-      </v-app-bar>
-      <v-navigation-drawer v-model="drawer" absolute temporary>
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
-          </v-list-item-avatar>
+          <v-list-item-icon v-show="item.roles.includes(getterUser.role)">
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>{{
-              roleToText(getterUser.role)
+            <v-list-item-title v-show="item.roles.includes(getterUser.role)">{{
+              item.title
             }}</v-list-item-title>
-            <v-list-item-subtitle>
-              {{ getterUser.lastName }} {{ getterUser.firstName }}
-              {{ getterUser.middleName }}
-            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <v-divider></v-divider>
-        <v-list dense>
-          <v-list-item
-            v-for="item in items"
-            :key="item.title"
-            :to="item.path"
-            link
-          >
-            <v-list-item-icon v-show="item.roles.includes(getterUser.role)">
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title
-                v-show="item.roles.includes(getterUser.role)"
-                >{{ item.title }}</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-      <v-main>
+      </v-list>
+    </v-navigation-drawer>
+    <v-main>
+      <v-container fluid>
         <router-view />
-      </v-main>
-      <!-- <BottomNav /> -->
-    </v-app>
-  </div>
+      </v-container>
+    </v-main>
+  </v-app>
+  <!-- <BottomNav /> -->
 </template>
 
 <script lang="ts">
@@ -161,4 +161,8 @@ export default Vue.extend({
 .v-progress-circular {
   margin: 1rem;
 }
+.v-nav-bar {
+  left: 0px;
+}
+/* style="height: 64px;margin-top: 0px;transform: translateY(0px);left: 0px;right: 0px;" */
 </style>

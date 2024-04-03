@@ -1,53 +1,60 @@
 <template>
   <div>
-    <v-data-table
-      :headers="headers"
-      :items="getterAddresses"
-      sort-by="createdAt"
-      class="elevation-1"
-      :items-per-page="7"
-    >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Адреса точек</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                Новая точка
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="12" md="12">
-                      <v-text-field
-                        v-model="addressObject.address"
-                        label="Адрес точки"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Отмена
+    <v-main>
+      <v-data-table
+        :headers="headers"
+        :items="getterAddresses"
+        sort-by="createdAt"
+        class="elevation-1"
+        :items-per-page="7"
+      >
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Адреса точек</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="500px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  dark
+                  class="mb-2"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Новая точка
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save">
-                  Сохранить
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <!-- <v-dialog v-model="dialogDelete" max-width="500px">
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">{{ formTitle }}</span>
+                </v-card-title>
+
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field
+                          v-model="addressObject.address"
+                          label="Адрес точки"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">
+                    Отмена
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="save">
+                    Сохранить
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <!-- <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5"
                 >Вы уыерены что хотите удалить ?</v-card-title
@@ -64,19 +71,22 @@
               </v-card-actions>
             </v-card>
           </v-dialog> -->
-        </v-toolbar>
-      </template>
-      <template v-slot:[`item.createdAt`]="{ item }">
-        {{ convertDate(item.createdAt) }}
-      </template>
-      <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-      </template>
-      <!-- <template v-slot:no-data>
+          </v-toolbar>
+        </template>
+        <template v-slot:[`item.createdAt`]="{ item }">
+          {{ convertDate(item.createdAt) }}
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon small class="mr-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+        </template>
+        <!-- <template v-slot:no-data>
         <v-btn color="primary" @click="initialize"> Reset </v-btn>
       </template> -->
-    </v-data-table>
+      </v-data-table>
+    </v-main>
   </div>
 </template>
 
@@ -131,7 +141,7 @@ export default {
       'addAddressPoint',
       'findAddressPoint',
       'updatePointsToCheck',
-      'removeAddressPoint'
+      'removeAddressPoint',
     ]),
     convertDate(date) {
       var newDate = new Date(date);

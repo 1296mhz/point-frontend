@@ -1,111 +1,97 @@
 <template>
-  <v-card class="flexcard" height="100%">
-    <v-row class="pa-4" justify="space-between">
-      <v-col cols="3">
-        <v-treeview
-          v-model="tree"
-          :active.sync="active"
-          :items="items"
-          :load-children="fetchManagers"
-          :open.sync="open"
-          activatable
-          color="warning"
-          open-on-click
-          transition
-          item-key="_id"
-          item-text="name"
-        >
-          <template v-slot:prepend="{ item }">
-            <v-icon v-if="!item.children"> mdi-account </v-icon>
-            <div class="v-treeview-node__label">
-              {{ item.name }}
-            </div>
-          </template>
-          <template v-slot:label="{ item }">
-            <div class="v-treeview-node__label">
-              {{ item.lastName }} {{ item.firstName }} {{ item.middleName }}
-            </div>
-          </template>
-        </v-treeview>
-      </v-col>
-
-      <v-divider vertical></v-divider>
-
-      <v-col class="d-flex text-center">
-        <v-scroll-y-transition mode="out-in">
-          <div
-            v-if="!selected"
-            class="text-h6 grey--text text--lighten-1 font-weight-light"
-            style="align-self: center"
+  <div>
+    <v-navigation-drawer app fixed clipped width="300">
+      <v-list subheader>
+        <v-subheader>Менеджеры</v-subheader>
+        <v-list-item-group v-model="selectedItem" color="primary">
+          <v-list-item
+            v-for="manager in this.getterManagers"
+            :key="manager._id"
           >
-            Выбери менеджера
-          </div>
-          <v-card
-            v-else
-            :key="selected._id"
-            class="pt-6 mx-auto"
-            flat
-            max-width="400"
-          >
-            <v-card-text>
-              <v-avatar v-if="avatar" size="88">
-                <v-img
-                  :src="`https://avataaars.io/${avatar}`"
-                  class="mb-6"
-                ></v-img>
-              </v-avatar>
-              <!-- <h3 class="text-h5 mb-2">
-                  {{ selected.username }}
-                </h3> -->
-              <!-- <div class="blue--text mb-2">
-                  {{ selected.email }}
-                </div> -->
-              <div class="blue--text subheading font-weight-bold">
-                {{ selected.username }}
-              </div>
-            </v-card-text>
-            <v-divider></v-divider>
-            <!-- <v-row class="text-left" tag="v-card-text">
-                <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
-                  Company:
-                </v-col>
-                <v-col>{{ selected.company.name }}</v-col>
-                <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
-                  Website:
-                </v-col>
-                <v-col>
-                  <a :href="`//${selected.website}`" target="_blank">{{
-                    selected.website
-                  }}</a>
-                </v-col>
-                <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">
-                  Phone:
-                </v-col>
-                <v-col>{{ selected.phone }}</v-col>
-              </v-row> -->
-          </v-card>
-        </v-scroll-y-transition>
-      </v-col>
+            <v-list-item-content>
+              <v-list-item-title
+                @click="selectManager(manager)"
+                v-text="
+                  `${manager.lastName} ${manager.firstName} ${manager.middleName}`
+                "
+              ></v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-icon> </v-list-item-icon>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
+    <v-row>
+      <v-card v-show="selectedItem === -1" class="mx-auto" max-width="500">
+        <v-card-title>Выберите менеджера</v-card-title>
+      </v-card>
+      <v-card v-show="selectedItem !== -1" class="mx-auto" max-width="500">
+        <v-list class="transparent">
+          <v-list-item>
+            <v-row justify="center">
+              <v-date-picker
+                v-model="dates"
+                multiple
+                readonly
+                full-width
+              ></v-date-picker>
+            </v-row>
+          </v-list-item>
+          <v-list-item>
+            <v-card-subtitle
+              >Адрес точки: {{ manager.pointAddress.address }}</v-card-subtitle
+            >
+            <v-row>
+              <!-- <v-list-item-title
+                >{{ manager.lastName }} {{ manager.firstName }}
+                {{ manager.middleName }}</v-list-item-title
+              > -->
+
+              <!-- <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon> -->
+
+              <!-- <v-list-item-subtitle class="text-right">
+              {{ manager.pointAddress.address }}
+            </v-list-item-subtitle> -->
+
+              <!-- <v-list-item-subtitle class="text-right">
+              Taking:
+            </v-list-item-subtitle> -->
+            </v-row>
+          </v-list-item>
+        </v-list>
+      </v-card>
     </v-row>
-  </v-card>
+  </div>
 </template>
 
 <script>
 /* eslint-disable */
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 // import { map, findIndex, find, matches } from 'lodash';
-const avatars = [
-  '?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGreen&clotheType=ShirtScoopNeck&eyeType=Wink&eyebrowType=UnibrowNatural&facialHairColor=Black&facialHairType=MoustacheMagnum&hairColor=Platinum&mouthType=Concerned&skinColor=Tanned&topType=Turban',
-  '?accessoriesType=Sunglasses&avatarStyle=Circle&clotheColor=Gray02&clotheType=ShirtScoopNeck&eyeType=EyeRoll&eyebrowType=RaisedExcited&facialHairColor=Red&facialHairType=BeardMagestic&hairColor=Red&hatColor=White&mouthType=Twinkle&skinColor=DarkBrown&topType=LongHairBun',
-  '?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Black&clotheType=ShirtVNeck&eyeType=Surprised&eyebrowType=Angry&facialHairColor=Blonde&facialHairType=Blank&hairColor=Blonde&hatColor=PastelOrange&mouthType=Smile&skinColor=Black&topType=LongHairNotTooLong',
-  '?accessoriesType=Round&avatarStyle=Circle&clotheColor=PastelOrange&clotheType=Overall&eyeType=Close&eyebrowType=AngryNatural&facialHairColor=Blonde&facialHairType=Blank&graphicType=Pizza&hairColor=Black&hatColor=PastelBlue&mouthType=Serious&skinColor=Light&topType=LongHairBigHair',
-  '?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly',
-];
-const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default {
   name: 'ReportsView',
   data: () => ({
+    dates: ['2019-09-10', '2019-09-20'],
+    selectedItem: -1,
+    time: 0,
+    cards: [],
+    manager: {
+      _id: '',
+      username: '',
+      firstName: '',
+      lastName: '',
+      middleName: '',
+      pointAddress: {
+        _id: '',
+        address: '',
+      },
+      createdAt: '',
+      updatedAt: '',
+      role: '',
+    },
     tree: [],
     active: [],
     avatar: null,
@@ -127,30 +113,22 @@ export default {
     fullName() {
       return `${this.getterUser.lastName} ${this.getterUser.firstName} ${this.getterUser.middleName}`;
     },
-    items() {
-      return [
-        {
-          name: 'Менеджеры',
-          children: this.managers,
-        },
-      ];
-    },
-    selected(item) {
-      console.log(item);
-      console.log(this.active);
-      if (!this.active.length) return undefined;
+    // selected(item) {
+    //   console.log(item);
+    //   console.log(this.active);
+    //   if (!this.active.length) return undefined;
 
-      const _id = this.active[0];
-      console.log(_id);
-      // console.log(
-      //   this.managers.find((manager) => {
-      //     console.log(manager);
-      //     console.log(_id);
-      //     return manager._id === _id;
-      //   })
-      // );
-      // return this.managers.find((manager) => manager._id === _id);
-    },
+    //   const _id = this.active[0];
+    //   console.log(_id);
+    //   // console.log(
+    //   //   this.managers.find((manager) => {
+    //   //     console.log(manager);
+    //   //     console.log(_id);
+    //   //     return manager._id === _id;
+    //   //   })
+    //   // );
+    //   // return this.managers.find((manager) => manager._id === _id);
+    // },
   },
   methods: {
     ...mapActions([
@@ -178,6 +156,10 @@ export default {
     randomAvatar() {
       this.avatar = avatars[Math.floor(Math.random() * avatars.length)];
     },
+    selectManager(item) {
+      this.manager = { ...item };
+      console.log(item);
+    },
   },
   watch: {
     // selected: 'randomAvatar',
@@ -187,6 +169,7 @@ export default {
     this.$log.info('Reports!');
     await this.setTitle('Отчёты по менеджерам');
     await this.setLoading(false);
+    await this.findManagers();
     await this.setLoading(true);
   },
 };
