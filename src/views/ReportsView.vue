@@ -30,9 +30,10 @@
           <v-list-item>
             <v-row justify="center">
               <v-date-picker
-                v-model="dates"
-                multiple
-                readonly
+                ref="picker"
+                v-model="date"
+                :show-current="pickerDate"
+                :picker-date.sync="pickerDate"
                 full-width
               ></v-date-picker>
             </v-row>
@@ -41,24 +42,6 @@
             <v-card-subtitle
               >Адрес точки: {{ manager.pointAddress.address }}</v-card-subtitle
             >
-            <v-row>
-              <!-- <v-list-item-title
-                >{{ manager.lastName }} {{ manager.firstName }}
-                {{ manager.middleName }}</v-list-item-title
-              > -->
-
-              <!-- <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon> -->
-
-              <!-- <v-list-item-subtitle class="text-right">
-              {{ manager.pointAddress.address }}
-            </v-list-item-subtitle> -->
-
-              <!-- <v-list-item-subtitle class="text-right">
-              Taking:
-            </v-list-item-subtitle> -->
-            </v-row>
           </v-list-item>
         </v-list>
       </v-card>
@@ -74,7 +57,13 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
   name: 'ReportsView',
   data: () => ({
-    dates: ['2019-09-10', '2019-09-20'],
+    dates: [],
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    // xxx: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+    // picker: (new Date).toISOString().substr(0, 10),
+    pickerDate: null,
     selectedItem: -1,
     time: 0,
     cards: [],
@@ -113,22 +102,6 @@ export default {
     fullName() {
       return `${this.getterUser.lastName} ${this.getterUser.firstName} ${this.getterUser.middleName}`;
     },
-    // selected(item) {
-    //   console.log(item);
-    //   console.log(this.active);
-    //   if (!this.active.length) return undefined;
-
-    //   const _id = this.active[0];
-    //   console.log(_id);
-    //   // console.log(
-    //   //   this.managers.find((manager) => {
-    //   //     console.log(manager);
-    //   //     console.log(_id);
-    //   //     return manager._id === _id;
-    //   //   })
-    //   // );
-    //   // return this.managers.find((manager) => manager._id === _id);
-    // },
   },
   methods: {
     ...mapActions([
@@ -142,6 +115,7 @@ export default {
       'findAddressPoint',
       'findReports',
       'findManagers',
+      'getReportDatesForEachDay',
     ]),
     ...mapMutations(['setUsers']),
     convertDate(date) {
@@ -156,13 +130,28 @@ export default {
     randomAvatar() {
       this.avatar = avatars[Math.floor(Math.random() * avatars.length)];
     },
-    selectManager(item) {
+    async selectManager(item) {
       this.manager = { ...item };
       console.log(item);
+      console.log(this.pickerDate);
+      this.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+      await this.getReportDatesForEachDay({
+        uuid: this.manager._id,
+        dateMonthYear: this.pickerDate,
+      });
     },
   },
   watch: {
-    // selected: 'randomAvatar',
+    async pickerDate(date) {
+      console.log(date);
+      if (this.manager._id) {
+        // this.date = date;
+        await this.getReportDatesForEachDay({
+          uuid: this.manager._id,
+          dateMonthYear: date,
+        });
+      }
+    },
   },
   created() {},
   async mounted() {

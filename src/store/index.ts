@@ -208,6 +208,15 @@ const actions = {
       throw err;
     }
   },
+  async getReportDatesForEachDay({commit}: any, data: any) {
+    try {
+      const response = await ReportsService.getReportDatesForEachDay(data);
+      // commit('setManagers', response.data);
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
+  },
   logout({commit}: any) {
     commit('logout');
   },

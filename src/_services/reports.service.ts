@@ -7,7 +7,8 @@ export const ReportsService = {
   find,
   add,
   update,
-  remove
+  remove,
+  getReportDatesForEachDay
 };
 
 async function get(uuid: string) {
@@ -67,6 +68,19 @@ async function update(report: any) {
         ...authHeader()
       },
     });
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+async function getReportDatesForEachDay(data: any) {
+  try {
+    const response = await httpClient.get(`/api/getReportDatesForEachDay/${data.uuid}/${data.dateMonthYear}`, {
+      headers: {
+        ...authHeader()
+      },
+    });
+    return response;
   } catch (err) {
     return Promise.reject(err);
   }
